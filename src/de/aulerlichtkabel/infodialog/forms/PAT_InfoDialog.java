@@ -43,7 +43,7 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Html;
 
 
-@SuppressWarnings("restriction")
+
 public class PAT_InfoDialog extends Window implements EventListener<Event> {
 
 	private static final long serialVersionUID = -4462007638873561294L;
@@ -76,28 +76,24 @@ public class PAT_InfoDialog extends Window implements EventListener<Event> {
 	}
 
 	private void init() {
-
+		
+		setSclass("popup-dialog");
 		setBorder("normal");
-
+		setStyle("position: absolute;");
+		setMode("embedded");
+		setShadow(true);
+		setAttribute(Window.MODE_KEY,  Window.MODE_MODAL );
+		
 		if (ThemeManager.isUseCSSForWindowSize()) {
 			ZKUpdateUtil.setWindowHeightX(this, 400);
 			ZKUpdateUtil.setWindowWidthX(this, 450);
 		}
 
-		setStyle("position: absolute;");
-
-		setClosable(true);
-		setSizable(true);
-		setMaximizable(true);
-		setShadow(true);
-
-		setSclass("popup-dialog text-editor-dialog");
-
 		createTabs();
 
 		Div footer = new Div();
 		footer.setSclass("dialog-footer");
-		ConfirmPanel confirmPanel = new ConfirmPanel(true);
+		ConfirmPanel confirmPanel = new ConfirmPanel(false);
 		footer.appendChild(confirmPanel);
 		confirmPanel.addActionListener(this);
 		appendChild(footer);
@@ -105,7 +101,6 @@ public class PAT_InfoDialog extends Window implements EventListener<Event> {
 	}
 
 	private void createTabs() {
-
 
 		htmlTab.setLabel(Msg.translate(Env.getCtx(), "Information").replaceAll("[&]", ""));
 
@@ -144,12 +139,10 @@ public class PAT_InfoDialog extends Window implements EventListener<Event> {
 
 	public void onEvent(Event event) throws Exception {
 
-		if ((event.getTarget().getId().equals(ConfirmPanel.A_OK))
-				|| (event.getTarget().getId().equals(ConfirmPanel.A_CANCEL))) {
-
+		if (event.getTarget().getId().equals(ConfirmPanel.A_OK)) {
 			detach();
 		}
-
+			
 	}
 
 }

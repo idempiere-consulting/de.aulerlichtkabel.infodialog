@@ -77,13 +77,8 @@ public class PAT_ToolbarAction extends Window implements IAction {
 
 		GridTab tab = content.getActiveGridTab();
 		
-		PAT_InfoDialog texteditordlg = new PAT_InfoDialog("", "", true, 200, true);
-
-		window.getMaskComponent().appendChild(texteditordlg);
-		texteditordlg.setAttribute(Window.MODE_KEY, Window.MODE_HIGHLIGHTED);
-		LayoutUtils.addSclass("busy-dialog", this);
-		LayoutUtils.openOverlappedWindow(window.getComponent(), texteditordlg, "middle_center");
-		
+		PAT_InfoDialog texteditordlg = new PAT_InfoDialog("", "", true, 200, true);		
+		window.getComponent().appendChild(texteditordlg);
 
 		ad_table_id = tab.getAD_Table_ID();
 		ad_client_id = (Integer) tab.getValue("AD_Client_ID");
@@ -123,10 +118,10 @@ public class PAT_ToolbarAction extends Window implements IAction {
 		}
 
 		if (hasConfig) {
-			texteditordlg.setMode("modal");
 			texteditordlg
 					.setContent(formatInfo(hdescriptionlabel.toString(), hresultlabel.toString(), labels, results));
-			texteditordlg.doPopup();
+			LayoutUtils.openOverlappedWindow(window.getComponent(), texteditordlg, "middle_center");
+			
 		} else {
 			texteditordlg.dispose();
 			FDialog.info(ad_window_id, this, "No infos defined", Msg.getMsg(Env.getCtx(), ""));
