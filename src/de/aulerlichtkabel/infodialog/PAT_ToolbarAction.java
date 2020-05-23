@@ -310,23 +310,17 @@ public class PAT_ToolbarAction extends Window implements IAction {
 
 			StringBuilder value = new StringBuilder();
 
-			if (token.equals("Record_ID")) {
-				value.append(record_id);
-			} else {
+			MColumn column = new MColumn(Env.getCtx(), tab.getField(token).getAD_Column_ID(), null);
 
-				MColumn column = new MColumn(Env.getCtx(), tab.getField(token).getAD_Column_ID(), null);
+			String types = "Date " + " Date+Time " + " Filename " + " Path " + " Memo " + " Printer Name " + " String "
+					+ " Text " + " Text Long " + " Time " + " URL " + " Yes-No";
 
-				String types = "Date " + " Date+Time " + " Filename " + " Path " + " Memo " + " Printer Name "
-						+ " String " + " Text " + " Text Long " + " Time " + " URL " + " Yes-No";
-
-				if (types.contains(column.getAD_Reference().getName())) {
-					value.append("\"");
-					value.append(tab.getField(token).getValue());
-					value.append("\"");
-				} else
-					value.append(tab.getField(token).getValue());
-
-			}
+			if (types.contains(column.getAD_Reference().getName())) {
+				value.append("\"");
+				value.append(tab.getField(token).getValue());
+				value.append("\"");
+			} else
+				value.append(tab.getField(token).getValue());
 
 			outStr.append(value);
 
