@@ -81,8 +81,8 @@ public class PAT_ToolbarAction extends Window implements IAction {
 		window.getComponent().appendChild(texteditordlg);
 
 		ad_table_id = tab.getAD_Table_ID();
-		ad_client_id = (Integer) tab.getValue("AD_Client_ID");
-		ad_org_id = (Integer) tab.getValue("AD_Org_ID");
+		ad_client_id = Env.getAD_Client_ID(Env.getCtx());
+		ad_org_id = Env.getAD_Org_ID(Env.getCtx());
 		ad_window_id = window.getAD_Window_ID();
 		ad_tab_id = tab.getAD_Tab_ID();
 		record_id = tab.getRecord_ID();   //#Record_ID#
