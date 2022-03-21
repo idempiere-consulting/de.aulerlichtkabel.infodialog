@@ -2,12 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Infodialog
 Bundle-SymbolicName: de.aulerlichtkabel.infodialog;singleton:=true
-Bundle-Version: 1.0.1.qualifier
+Bundle-Version: 10.0.0.qualifier
 Automatic-Module-Name: de.aulerlichtkabel.infodialog
 Bundle-RequiredExecutionEnvironment: JavaSE-11
-Require-Bundle: org.adempiere.base;bundle-version="7.1.0",
- org.adempiere.plugin.utils;bundle-version="7.1.0",
- org.adempiere.ui.zk;bundle-version="7.1.0"
+Require-Bundle: org.adempiere.base,
+ org.adempiere.plugin.utils,
+ org.adempiere.ui.zk
 Import-Package: org.compiere.model,
  org.zkoss.html,
  org.zkoss.zhtml,
