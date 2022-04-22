@@ -85,8 +85,8 @@ public class PAT_InfoDialog extends Window implements EventListener<Event> {
 		setAttribute(Window.MODE_KEY,  Window.MODE_MODAL );
 		
 		if (ThemeManager.isUseCSSForWindowSize()) {
-			ZKUpdateUtil.setWindowHeightX(this, 400);
-			ZKUpdateUtil.setWindowWidthX(this, 450);
+			ZKUpdateUtil.setWindowHeightX(this, 800);//iDempiereConsulting __22/04/2022 ---- InfoDialog ridimensionato
+			ZKUpdateUtil.setWindowWidthX(this, 850);//iDempiereConsulting __22/04/2022 ---- 
 		}
 
 		createTabs();

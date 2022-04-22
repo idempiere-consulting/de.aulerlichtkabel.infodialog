@@ -38,6 +38,7 @@ import org.adempiere.webui.action.IAction;
 import org.adempiere.webui.adwindow.ADWindow;
 import org.adempiere.webui.adwindow.ADWindowContent;
 import org.adempiere.webui.component.Window;
+import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridTab;
 import org.compiere.model.MColumn;
@@ -47,6 +48,7 @@ import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.zkoss.zk.ui.Component;
 
 import de.aulerlichtkabel.infodialog.forms.PAT_InfoDialog;
 import de.aulerlichtkabel.infodialog.model.MPAT_InfoDialog;
@@ -62,6 +64,12 @@ public class PAT_ToolbarAction extends Window implements IAction {
 	private int ad_window_id = 0;
 	private int ad_tab_id = 0;
 	private int record_id;
+	
+	//iDempiereConsulting __22/04/2022 ---- InfoDialog gestito da specialForm(es. jpiereMatrixWindow)
+	private GridTab tabTmp = null;
+	private int recordTmp = 0;
+	private String selectGroup = null; //default
+	//iDempiereConsulting __22/04/2022 ----------END
 
 
 	DecimalFormat numberFormat = DisplayType.getNumberFormat(DisplayType.Amount);
@@ -75,17 +83,36 @@ public class PAT_ToolbarAction extends Window implements IAction {
 		ADWindow window = (ADWindow) target;
 		ADWindowContent content = window.getADWindowContent();
 
-		GridTab tab = content.getActiveGridTab();
+		//iDempiereConsulting __22/04/2022 ---- InfoDialog gestito da specialForm(es. jpiereMatrixWindow)
+//		GridTab tab = content.getActiveGridTab();
+//		
+//		PAT_InfoDialog texteditordlg = new PAT_InfoDialog("", "", true, 200, true);		
+//		window.getComponent().appendChild(texteditordlg);
+		GridTab tab = null;
+		PAT_InfoDialog texteditordlg = null;
+		try {
+			tab = content.getActiveGridTab();
 		
-		PAT_InfoDialog texteditordlg = new PAT_InfoDialog("", "", true, 200, true);		
-		window.getComponent().appendChild(texteditordlg);
-
+			texteditordlg = new PAT_InfoDialog("", "", true, 200, true);		
+			window.getComponent().appendChild(texteditordlg);
+		}catch (NullPointerException e) {
+			tab = tabTmp;
+			texteditordlg = new PAT_InfoDialog("", "", true, 200, true);		
+			SessionManager.getAppDesktop().getActiveWindow().appendChild(texteditordlg);
+		}
+		//iDempiereConsulting __22/04/2022 -----------END
+		
 		ad_table_id = tab.getAD_Table_ID();
 		ad_client_id = Env.getAD_Client_ID(Env.getCtx());
 		ad_org_id = Env.getAD_Org_ID(Env.getCtx());
 		ad_window_id = window.getAD_Window_ID();
 		ad_tab_id = tab.getAD_Tab_ID();
 		record_id = tab.getRecord_ID();   //#Record_ID#
+		
+		//iDempiereConsulting __22/04/2022 ---- InfoDialog gestito da specialForm(es. jpiereMatrixWindow)
+		if(record_id<=0)
+			record_id = recordTmp;
+		//iDempiereConsulting __22/04/2022 ---------END
 
 		ArrayList<String> labels = new ArrayList<String>();
 		ArrayList<String> results = new ArrayList<String>();
@@ -120,7 +147,13 @@ public class PAT_ToolbarAction extends Window implements IAction {
 		if (hasConfig) {
 			texteditordlg
 					.setContent(formatInfo(hdescriptionlabel.toString(), hresultlabel.toString(), labels, results));
-			LayoutUtils.openOverlappedWindow(window.getComponent(), texteditordlg, "middle_center");
+			//iDempiereConsulting __22/04/2022 ---- InfoDialog gestito da specialForm(es. jpiereMatrixWindow)
+			//LayoutUtils.openOverlappedWindow(window.getComponent(), texteditordlg, "middle_center");
+			Component c =  window.getComponent();
+			if(c==null)
+				c = SessionManager.getAppDesktop().getActiveWindow();
+			LayoutUtils.openOverlappedWindow(c, texteditordlg, "middle_center");
+			//iDempiereConsulting __22/04/2022 ---------END
 			
 		} else {
 			texteditordlg.dispose();
@@ -140,6 +173,12 @@ public class PAT_ToolbarAction extends Window implements IAction {
 		whereClause.append(MPAT_InfoDialog.COLUMNNAME_AD_Window_ID + "=? ");
 		whereClause.append(" AND ");
 		whereClause.append(MPAT_InfoDialog.COLUMNNAME_AD_Tab_ID + "=? ");
+		//iDempiereConsulting __22/04/2022 ---- InfoDialog gestito da specialForm(es. jpiereMatrixWindow)
+		if(selectGroup!=null && !selectGroup.trim().isEmpty()) {
+			whereClause.append(" AND ");
+			whereClause.append(MPAT_InfoDialog.COLUMNNAME_Description + "='"+selectGroup+"'");
+		}
+		//iDempiereConsulting __22/04/2022 ----------END
 
 		List<MPAT_InfoDialog> list = new Query(getCtx(), MPAT_InfoDialog.Table_Name, whereClause.toString(),
 				getTrxName()).setParameters(ad_client_id, ad_org_id, ad_window_id, ad_tab_id)
@@ -327,5 +366,18 @@ public class PAT_ToolbarAction extends Window implements IAction {
 		return outStr.toString();
 
 	}
+	
+	//iDempiereConsulting __22/04/2022 ---- InfoDialog gestito da specialForm(es. jpiereMatrixWindow)
+	public void setGridTab_byMatrix(GridTab _tab) {
+		tabTmp = _tab;
+	}
+	
+	public void setRecordId_byMatrix(int id) {
+		recordTmp = id;
+	}
 
+	public void setGroup_byMatrix(String _group) {
+		selectGroup = _group;
+	}
+	//iDempiereConsulting __22/04/2022 ----------END
 }
